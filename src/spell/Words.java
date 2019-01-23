@@ -94,16 +94,17 @@ public class Words implements ITrie {
 
     private WordNode findSimilarWord(String word) {
 
-        ArrayList<String> matchPossibilities = new ArrayList<>();
+        ArrayList<String> possMatches = new ArrayList<>();
 
-        addDeletionPossibilities(word, matchPossibilities);
-        addTranspositionPossibilities(word, matchPossibilities);
-        addAlterationPossibilities(word, matchPossibilities);
-        addInsertionPossibilities(word, matchPossibilities);
+        addDeletionPossibilities(word, possMatches);
+        addTranspositionPossibilities(word, possMatches);
+        addAlterationPossibilities(word, possMatches);
+        addInsertionPossibilities(word, possMatches);
 
         ArrayList<WordNode> matches = new ArrayList<>();
 
-        for (String possMatch : matchPossibilities) {
+        // edit distance 1
+        for (String possMatch : possMatches) {
 
             WordNode currNode = findExactWord(possMatch);
 
@@ -113,7 +114,29 @@ public class Words implements ITrie {
             }
         }
 
-        Collections.sort(matches);
+        // edit distance 2
+        if (matches.size() == 0) {
+            ArrayList<String> possMatches2 = new ArrayList<>();
+
+            for (String possMatch : possMatches) {
+                addDeletionPossibilities(possMatch, possMatches2);
+                addTranspositionPossibilities(possMatch, possMatches2);
+                addAlterationPossibilities(possMatch, possMatches2);
+                addInsertionPossibilities(possMatch, possMatches2);
+            }
+
+            for (String possMatch : possMatches2) {
+
+                WordNode currNode = findExactWord(possMatch);
+
+                if (currNode != null) {
+
+                    matches.add(currNode);
+                }
+            }
+        }
+
+        Collections.sort(matches, Collections.reverseOrder());
 
         return matches.size() > 0 ? matches.get(0) : null;
     }
@@ -174,6 +197,7 @@ public class Words implements ITrie {
 
             if (word != null) {
                 nextNode.incrementValue();
+                nextNode.setWord(word);
             }
 
             return nextNode;
@@ -191,6 +215,10 @@ public class Words implements ITrie {
             return word;
         }
 
+        public void setWord(String word) {
+            this.word = word;
+        }
+
         @Override
         public int getValue() {
             return value;
@@ -205,7 +233,7 @@ public class Words implements ITrie {
             int result = this.getValue() - o.getValue();
 
             if (result == 0) {
-                result = this.getWord().compareTo(o.getWord());
+                result = o.getWord().compareTo(this.getWord());
             }
 
             return result;

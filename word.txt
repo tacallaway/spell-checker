@@ -1,4 +1,5 @@
-cores
+core
 ode
-coders
-coeds
+coder
+coed
+ode
