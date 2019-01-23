@@ -1,9 +1,10 @@
 package spell;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Words implements ITrie {
-    WordNode root = new WordNode();
+    WordNode root = new WordNode(null);
 
     @Override
     public int hashCode() {
@@ -28,39 +29,93 @@ public class Words implements ITrie {
 
             char letter = word.charAt(i);
 
-            currNode = currNode.insertSubNode(letter, i == (word.length() - 1));
+            currNode = currNode.insertSubNode(letter, i == (word.length() - 1) ? word : null);
         }
 
     }
 
-    private void addDeletionPossibilities(ArrayList<String> possMatches) {
-        // add deletion options
+    private void addDeletionPossibilities(String word, ArrayList<String> possMatches) {
+        if (word.length() < 2) {
+            return;
+        }
+
+        for(int i = 0; i < word.length(); i++) {
+            String possMatch;
+            if (i == 0) {
+                possMatch = word.substring(1);
+            } else if (i == word.length() - 1) {
+                possMatch = word.substring(0, i);
+            } else {
+                possMatch = word.substring(0, i) + word.substring(i+1);
+            }
+
+            possMatches.add(possMatch);
+        }
     }
 
-    private void addTranspositionPossibilities(ArrayList<String> possMatches) {
+    private void addTranspositionPossibilities(String word, ArrayList<String> possMatches) {
 
+        for (int i = 0; i < word.length() - 1; i++) {
+
+            char[] ch = word.toCharArray();
+            char temp = ch[i];
+            ch[i] = ch[i + 1];
+            ch[i + 1] = temp;
+
+            possMatches.add(new String(ch));
+        }
     }
 
-    private void addAlterationPossibilities(ArrayList<String> possMatches) {
+    private void addAlterationPossibilities(String word, ArrayList<String> possMatches) {
 
+        for (int i = 0; i < word.length(); i++) {
+
+            for (int j = 'a'; j <= 'z'; j++) {
+
+                StringBuilder possMatch = new StringBuilder(word);
+                possMatch.setCharAt(i, (char)j);
+                possMatches.add(possMatch.toString());
+            }
+        }
     }
 
-    private void addAdditionPossibilities(ArrayList<String> possMatches) {
+    private void addInsertionPossibilities(String word, ArrayList<String> possMatches) {
 
+        for (int i = 0; i <= word.length(); i++) {
+
+            for (int j = 'a'; j <= 'z'; j++) {
+
+                StringBuilder possMatch = new StringBuilder(word);
+                possMatch.insert(i, (char)j);
+                possMatches.add(possMatch.toString());
+            }
+        }
     }
 
     private WordNode findSimilarWord(String word) {
 
         ArrayList<String> matchPossibilities = new ArrayList<>();
 
-        addDeletionPossibilities(matchPossibilities);
-        addTranspositionPossibilities(matchPossibilities);
-        addAlterationPossibilities(matchPossibilities);
-        addAdditionPossibilities(matchPossibilities);
+        addDeletionPossibilities(word, matchPossibilities);
+        addTranspositionPossibilities(word, matchPossibilities);
+        addAlterationPossibilities(word, matchPossibilities);
+        addInsertionPossibilities(word, matchPossibilities);
 
-        // match logic
+        ArrayList<WordNode> matches = new ArrayList<>();
 
-        return null;
+        for (String possMatch : matchPossibilities) {
+
+            WordNode currNode = findExactWord(possMatch);
+
+            if (currNode != null) {
+
+                matches.add(currNode);
+            }
+        }
+
+        Collections.sort(matches);
+
+        return matches.size() > 0 ? matches.get(0) : null;
     }
 
     private WordNode findExactWord(String word) {
@@ -74,7 +129,7 @@ public class Words implements ITrie {
             currNode = currNode.getSubNode(letter);
         }
 
-        return currNode;
+        return currNode == null || currNode.getValue() == 0 ? null : currNode;
     }
 
     @Override
@@ -100,27 +155,28 @@ public class Words implements ITrie {
         return 0;
     }
 
-    public class WordNode implements ITrie.INode {
+    public class WordNode implements ITrie.INode, Comparable<WordNode> {
         private int value = 0;
         private WordNode[] nodes = new WordNode[26];
+        private String word;
 
-        public WordNode insertSubNode(char letter, boolean endOfWord) {
+        public WordNode(String word) {
+            this.word = word;
+        }
+
+        public WordNode insertSubNode(char letter, String word) {
             WordNode nextNode = getSubNode(letter);
 
             if (nextNode == null) {
-                nextNode = new WordNode();
+                nextNode = new WordNode(word);
                 nodes[letter - 'a'] = nextNode;
             }
 
-            if (endOfWord) {
+            if (word != null) {
                 nextNode.incrementValue();
             }
 
             return nextNode;
-        }
-
-        public WordNode insertSubNode(char letter) {
-            return insertSubNode(letter, false);
         }
 
         public WordNode getSubNode(char letter) {
@@ -131,6 +187,10 @@ public class Words implements ITrie {
             return nodes[letter - 'a'];
         }
 
+        public String getWord() {
+            return word;
+        }
+
         @Override
         public int getValue() {
             return value;
@@ -138,6 +198,17 @@ public class Words implements ITrie {
 
         public void incrementValue() {
             value++;
+        }
+
+        @Override
+        public int compareTo(WordNode o) {
+            int result = this.getValue() - o.getValue();
+
+            if (result == 0) {
+                result = this.getWord().compareTo(o.getWord());
+            }
+
+            return result;
         }
     }
 }

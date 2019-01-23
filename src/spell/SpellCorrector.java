@@ -28,11 +28,11 @@ public class SpellCorrector implements ISpellCorrector {
     @Override
     public String suggestSimilarWord(String inputWord) {
 
-        Words.INode foundWord = words.find(inputWord);
+        Words.WordNode foundWord = (Words.WordNode)words.find(inputWord);
 
         if (foundWord != null && foundWord.getValue() > 0) {
 
-            return inputWord;
+            return foundWord.getWord();
         }
 
         return null;
