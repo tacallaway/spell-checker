@@ -53,6 +53,10 @@ public class Words implements ITrie {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        
         return isEqual(this.root, ((Words)obj).root);
     }
 
