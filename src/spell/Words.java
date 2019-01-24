@@ -250,7 +250,7 @@ public class Words implements ITrie {
 
             if (currNode != null) {
                 count++;
-                count = returnWordCount(currNode, count);
+                count = returnNodeCount(currNode, count);
             }
         }
 
