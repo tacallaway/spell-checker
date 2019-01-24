@@ -1,7 +1,6 @@
-bbb
-bbbc
-abc
-cba
-aaa
-z
-bbbcd
+my
+friend
+is
+named
+names
+'Jack'

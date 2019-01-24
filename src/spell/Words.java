@@ -53,7 +53,7 @@ public class Words implements ITrie {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (!(obj instanceof Words)) {
             return false;
         }
         
