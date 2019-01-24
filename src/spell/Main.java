@@ -32,5 +32,4 @@ public class Main {
 		
 		System.out.println("Suggestion is: " + suggestion);
 	}
-
 }

@@ -4,21 +4,78 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Words implements ITrie {
-    WordNode root = new WordNode(null);
+    public WordNode root = new WordNode(null);
+
+    private int getHashCode(WordNode node, int hashCode) {
+
+        for (int i = 'a'; i <= 'z'; i++) {
+
+            WordNode currNode = node.getSubNode((char) i);
+
+            if (currNode != null) {
+                hashCode += 7 * getHashCode(currNode, hashCode);
+            }
+        }
+
+        return hashCode;
+    }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return getHashCode(root, 1);
+    }
+
+    private boolean isEqual(WordNode node1, WordNode node2) {
+
+        if (node1 == null && node2 == null) {
+            return true;
+        }
+
+        if (node1 == null || node2 == null) {
+            return false;
+        }
+
+        if (node1.getValue() != node2.getValue()) {
+            return false;
+        }
+
+        for (int i = 'a'; i <= 'z'; i++) {
+
+            boolean result = isEqual(node1.getSubNode((char)i), node2.getSubNode((char)i));
+
+            if (!result) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        return isEqual(this.root, ((Words)obj).root);
+    }
+
+    private void returnString(WordNode node, StringBuilder sb) {
+
+        for (int i = 'a'; i <= 'z'; i++) {
+
+            WordNode currNode = node.getSubNode((char)i);
+
+            if (currNode != null) {
+                if (currNode.getWord() != null) {
+                    sb.append(currNode.getWord()).append("\n");
+                }
+                returnString(currNode, sb);
+            }
+        }
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder sb = new StringBuilder();
+        returnString(root, sb);
+        return sb.toString();
     }
 
     @Override
@@ -168,14 +225,48 @@ public class Words implements ITrie {
         return currNode;
     }
 
+    private int returnWordCount(WordNode node, int count) {
+
+        for (int i = 'a'; i <= 'z'; i++) {
+
+            WordNode currNode = node.getSubNode((char)i);
+
+            if (currNode != null) {
+                if (currNode.getValue() > 0) {
+                    count++;
+                }
+                count = returnWordCount(currNode, count);
+            }
+        }
+
+        return count;
+    }
+
+    private int returnNodeCount(WordNode node, int count) {
+
+        for (int i = 'a'; i <= 'z'; i++) {
+
+            WordNode currNode = node.getSubNode((char)i);
+
+            if (currNode != null) {
+                count++;
+                count = returnWordCount(currNode, count);
+            }
+        }
+
+        return count;
+    }
+
     @Override
     public int getWordCount() {
-        return 0;
+
+        return returnWordCount(root,0);
     }
 
     @Override
     public int getNodeCount() {
-        return 0;
+
+        return returnNodeCount(root, 0);
     }
 
     public class WordNode implements ITrie.INode, Comparable<WordNode> {

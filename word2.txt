@@ -1,4 +1,4 @@
-bbba
+bbb
 bbbc
 abc
 cba
