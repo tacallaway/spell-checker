@@ -260,13 +260,13 @@ public class Words implements ITrie {
     @Override
     public int getWordCount() {
 
-        return returnWordCount(root,0);
+        return returnWordCount(root, 0);
     }
 
     @Override
     public int getNodeCount() {
 
-        return returnNodeCount(root, 0);
+        return returnNodeCount(root, 1);
     }
 
     public class WordNode implements ITrie.INode, Comparable<WordNode> {
