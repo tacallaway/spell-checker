@@ -226,6 +226,9 @@ public class Words implements ITrie {
         if (currNode == null) {
 
             currNode = findSimilarWord(word);
+        } else {
+
+            currNode = null;
         }
 
         return currNode;
