@@ -220,6 +220,11 @@ public class Words implements ITrie {
 
     @Override
     public INode find(String word) {
+        if (word == null) {
+            return null;
+        }
+
+        word = word.toLowerCase();
 
         return findExactWord(word);
     }
