@@ -153,7 +153,7 @@ public class Words implements ITrie {
         }
     }
 
-    private WordNode findSimilarWord(String word) {
+    public WordNode findSimilarWord(String word) {
 
         ArrayList<String> possMatches = new ArrayList<>();
         possMatches.clear(); // for some reason the TA test harness needs this to be cleared
@@ -221,17 +221,7 @@ public class Words implements ITrie {
     @Override
     public INode find(String word) {
 
-        WordNode currNode = findExactWord(word);
-
-        if (currNode == null) {
-
-            currNode = findSimilarWord(word);
-        } else {
-
-            currNode = null;
-        }
-
-        return currNode;
+        return findExactWord(word);
     }
 
     private int returnWordCount(WordNode node, int count) {

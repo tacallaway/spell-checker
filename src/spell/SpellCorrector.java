@@ -28,7 +28,7 @@ public class SpellCorrector implements ISpellCorrector {
     @Override
     public String suggestSimilarWord(String inputWord) {
 
-        Words.WordNode foundWord = (Words.WordNode)words.find(inputWord);
+        Words.WordNode foundWord = words.findSimilarWord(inputWord);
 
         if (foundWord != null && foundWord.getValue() > 0) {
 
