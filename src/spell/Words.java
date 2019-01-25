@@ -156,6 +156,7 @@ public class Words implements ITrie {
     private WordNode findSimilarWord(String word) {
 
         ArrayList<String> possMatches = new ArrayList<>();
+        possMatches.clear(); // for some reason the TA test harness needs this to be cleared
 
         addDeletionPossibilities(word, possMatches);
         addTranspositionPossibilities(word, possMatches);
@@ -163,6 +164,7 @@ public class Words implements ITrie {
         addInsertionPossibilities(word, possMatches);
 
         ArrayList<WordNode> matches = new ArrayList<>();
+        matches.clear(); // for some reason the TA test harness needs this to be cleared
 
         // edit distance 1
         for (String possMatch : possMatches) {
