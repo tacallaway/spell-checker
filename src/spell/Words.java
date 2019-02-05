@@ -155,6 +155,12 @@ public class Words implements ITrie {
 
     public WordNode findSimilarWord(String word) {
 
+        WordNode exactNode = findExactWord(word);
+
+        if (exactNode != null) {
+            return exactNode;
+        }
+
         ArrayList<String> possMatches = new ArrayList<>();
         possMatches.clear(); // for some reason the TA test harness needs this to be cleared
 
