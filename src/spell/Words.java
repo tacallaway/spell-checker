@@ -101,9 +101,9 @@ public class Words implements ITrie {
         }
 
         for(int i = 0; i < word.length(); i++) {
-            StringBuilder sb = new StringBuilder(word);
-            sb.delete(i);
-            possMatches.add(sb.toString());
+            StringBuilder possMatch = new StringBuilder(word);
+            possMatch.delete(i);
+            possMatches.add(possMatch.toString());
         }
     }
 
