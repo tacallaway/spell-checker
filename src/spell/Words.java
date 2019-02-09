@@ -305,7 +305,7 @@ public class Words implements ITrie {
         }
 
         public WordNode getSubNode(char letter) {
-            if (letter < 97 || letter > 122) {
+            if (letter < 'a' || letter > 'z') {
                 return null;
             }
 
