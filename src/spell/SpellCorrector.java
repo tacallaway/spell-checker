@@ -10,17 +10,15 @@ public class SpellCorrector implements ISpellCorrector {
     @Override
     public void useDictionary(String dictionaryFileName) throws IOException {
 
-        try(BufferedReader dictionary = new BufferedReader(new FileReader(dictionaryFileName))) {
+        Scanner scanner = new Scanner(new File(dictionaryFilename));
 
-            String line;
-            while ((line = dictionary.readLine()) != null) {
+        while (scanner.hasNextLine()) {
+            
+            String word = scanner.nextLine().trim().toLowerCase();
 
-                String word = line.trim().toLowerCase();
+            if (word.matches("^[a-z]+$")) {
 
-                if (word.matches("^[a-z]+$")) {
-
-                    words.add(word);
-                }
+                words.add(word);
             }
         }
     }
